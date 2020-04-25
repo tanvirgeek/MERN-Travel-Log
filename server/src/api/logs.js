@@ -4,10 +4,30 @@ const router = Router()
 const OneDataModel = require('../models/oneDataModel')
 const LogEntryModel = require('../models/logEntry')
 
-router.get('/', (req,res)=>{
-    res.json({
-        message: "Hello From logs Page"
-    })
+router.get('/', async(req, res, next)=>{
+
+    try{
+        const entries = await LogEntryModel.find();
+        res.json(entries);
+    }catch(error){
+        next(error)
+    }
+    
+})
+
+router.post("/", async(req, res, next)=>{
+    try{
+        console.log(req.body)
+        const logData = new LogEntryModel(req.body);
+        const createdEntry = await logData.save();
+        res.json(createdEntry);
+    }catch(error){
+        if (error.name === "ValidationError"){
+            res.status(422)
+        }
+        next(error);
+    }
+    
 })
 
 router.get('/insertLog/:title',(req,res)=>{

@@ -15,12 +15,12 @@ db.once('open', function() {
   // we're connected!
 });
 
-
 app.use(morgan('common')) 
 app.use(helmet())
 app.use(cors({
     origin:process.env.CORS_ORIGIN,
 }))
+app.use(express.json());
 
 app.get('/', (req, res)=>{
     res.json({
@@ -29,9 +29,7 @@ app.get('/', (req, res)=>{
 });
 
 app.use('/api/logs', logs);
-
 app.use(middleware.notFound)
-
 app.use(middleware.errorHandler)
 
 const port = process.env.PORT || 5000
